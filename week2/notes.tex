@@ -3,6 +3,7 @@
 \geometry{margin=1in}
 \usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage{pgfplots}
 \DeclareMathOperator*{\argmax}{argmax}
 \pagenumbering{gobble}
 \begin{document}
@@ -20,6 +21,15 @@ $x$, $1-x \leq e^{-x}$. So, $\frac{Vol((1-\epsilon)A)}{Vol(A)} = (1-\epsilon)^d
 implies that nearly all the volume of $A$ is contained in the portion of A not
 included in $(1-\epsilon)A$.
 
+%\begin{center}
+%	\begin{tikzpicture}[scale= .4]
+%	\begin{axis}
+%		\addplot[color=orange,
+%		domain = -3:3]{exp(-x)};
+%		\addplot[color=blue,domain=-3:3]{1-x};
+%	\end{axis}
+%\end{tikzpicture}
+%\end{center}
 
 \medskip
 
