@@ -55,21 +55,8 @@ Rearranging terms, we have:
 = \frac{1}{\sqrt{2\pi d}} \left( \frac{\pi e}{d} \right)^d
 \end{equation}
 
-Referring to $ \left( \frac{\pi e}{d} \right)^d$, the denominator grows faster with $d$ than does the
-numerator. We
-can show this more formally by computing the derivative of the numerator and of the
-denominator, respectively:
-
-\begin{equation}
-\frac{d}{dx} ((\pi e)^x) = (\pi e)^x (1 + \ln \pi)
-\end{equation}
-
-\begin{equation}
-\frac{d}{dx}(x^x) = x^x (1 + \ln x)
-\end{equation}
-
-As $x$ grows larger, (6) becomes increasingly larger than (5). As a consequence, if we extend $d$ infinitely, 
-the limit of the ratio is 0.
+Referring to $ \left( \frac{\pi e}{d} \right)^d$, the denominator grows (much) faster with $d$ than does the
+numerator. As a consequence, if we extend $d$ infinitely, the limit of the ratio is 0.
 
 \begin{equation}
 \lim_{d \to \infty} \left( \frac{\pi e}{d} \right)^d = 0
@@ -79,12 +66,6 @@ Which implies:
 \begin{equation}
 \lim_{d \to \infty} \frac{1}{\sqrt{2\pi d}} \left( \frac{\pi e}{d} \right)^d = 0
 \end{equation}
-
-In other words, as $d \to \infty$, more and more of the volume of the unit ball
-is contained near its surface. This phenomenon is called \textit{concentration
-of measure}.
-
-\smallskip
 
 Returning to (1), we compute the the volume of the unit cube as $d \to \infty$.
 
@@ -105,8 +86,42 @@ rejection sampling grows asymptotically with $d$. For example, for $d=10000$, ou
 program would run for a very, very, \textit{very} long time. 
 
 \subsection*{B}
-We can generate $\Theta$ as $\Theta = Z / ||Z||_2$, where $Z \sim N(0, I_d)$ due
-to the Box-Muller (B-M) transformation. 
+We can generate $\Theta$ as $\Theta = Z / ||Z||_2$, where $Z \sim N(0, I_d)$.
+
+\smallskip
+
+The square root of sums of squares of independent standard normal random
+variables is the chi distribution. 
+
+\begin{equation}
+	Z^2_1 + Z^2_2 + ... Z^2_n = \chi^2_n
+\end{equation}
+
+\subsection*{C}
+
+The two methods implemented in \textbf{A} and \textbf{B}---rejection and polar
+sampling, respectively--- can be empirically
+compared. Each program was used to generate 100 samples with $d=10$. The
+execution runtime was measured with the Linux \texttt{time} command, e.g.
+\texttt{time python3 hw1\_1A.py}. Method B is significantly faster than Method
+A, as shown in Table 1.
+
+\begin{center}
+	\begin{table}[h]
+		\centering
+		\caption{Runtime comparison (seconds)}
+		\begin{tabular}{|c c c|}
+			\hline
+			& A & B \\
+			real & 2.131 & 0.744\\
+			user & 2.150 & 0.744\\
+			sys  & 0.172 & 0.192\\
+			\hline
+		\end{tabular}
+	\end{table}
+\end{center}
+
+
 
 \section*{Problem 2}
 
@@ -132,7 +147,7 @@ means the probability that any two vectors are far apart increases with
 dimensionality. This magnifies the effect of variance, which as previously
 discussed is greater for $X_+$ and $Z$.
 
-\begin{figure}[h]
+\begin{figure}[h!]
 	\centering
 	\caption{Frequency of event}
 	\begin{tikzpicture}
