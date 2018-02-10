@@ -1,5 +1,4 @@
-\documentclass{article}
-
+\documentclass{article} 
 \usepackage{geometry}
 \geometry{margin=1in}
 
@@ -68,7 +67,8 @@ numerator. As a consequence, if we extend $d$ infinitely, the limit of the ratio
 
 Which implies:
 \begin{equation}
-\lim_{d \to \infty} \frac{1}{\sqrt{2\pi d}} \left( \frac{\pi e}{d} \right)^d = 0
+\lim_{d \to \infty} \frac{1}{\sqrt{2\pi d}} \left( \frac{\pi e}{d} \right)^d =
+	\frac{1}{\infty} \times 0 = 0
 \end{equation}
 
 Returning to (1), we compute the the volume of the unit cube as $d \to \infty$.
@@ -90,21 +90,11 @@ rejection sampling grows asymptotically with $d$. For example, for $d=10000$, ou
 program would run for a very, very, \textit{very} long time. 
 
 \subsection*{B}
-We can generate $\Theta$ as $\Theta = Z / ||Z||_2$, where $Z \sim N(0, I_d)$.
-
-\smallskip
-
-The square root of sums of squares of independent standard normal random
-variables is the chi distribution. 
-
-\begin{equation}
-	Z^2_1 + Z^2_2 + ... Z^2_n = \chi^2_n
-\end{equation}
+See attached code \texttt{hw1\_1B.py} for an implementation of polar sampling.
 
 \subsection*{C}
 
-The two methods implemented in \textbf{A} and \textbf{B}---rejection and polar
-sampling, respectively---can be empirically
+The methods implemented in \textbf{A} and \textbf{B} can be empirically
 compared. Each program was used to generate 100 samples with $d=10$. The
 execution runtime was measured with the Linux \texttt{time} command, e.g.
 \texttt{time python3 hw1\_1A.py}. Method B is significantly faster than Method
@@ -116,10 +106,10 @@ A, as shown in Table 1.
 		\caption{Runtime comparison (seconds)}
 		\begin{tabular}{|c c c|}
 			\hline
-			& A & B \\
-			real & 2.131 & 0.744\\
-			user & 2.150 & 0.744\\
-			sys  & 0.172 & 0.192\\
+			& \textbf{A} & \textbf{B} \\
+			\textbf{real} & 2.131 & 0.744\\
+			\textbf{user} & 2.150 & 0.744\\
+			\textbf{sys}  & 0.172 & 0.192\\
 			\hline
 		\end{tabular}
 	\end{table}
@@ -131,7 +121,7 @@ A, as shown in Table 1.
 
 \subsection*{A}
 
-Simulation code is attached as \texttt{hw2\_A.py}. 
+Simulation code is attached as \texttt{hw1\_2A.py}. 
 
 \smallskip
 
@@ -196,7 +186,10 @@ This theoretical result explains our empirical observations in \textbf{A}. With
 low dimensionality, the expected value of $||X_{-} - Z||_2^2$ is greater than
 that of $||X_+ -Z||^2_2$, and so our event occurs with low frequency.
 However, the expected value of $||X_+ -Z||^2_2$ grows faster with $d$, and so in
-high dimensions, our event occurs with high frequency. The different rate of
+high dimensions, our event occurs with high frequency. In essence,
+concentration of measure / curse of
+dimensionality magnify the effect of $X_+$'s higher variance as dimensionality
+grows higher. The different rate of
 growth of expected value with $d$ is visualized below in Figure 2.
 
 \begin{figure}[h!]
