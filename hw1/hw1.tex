@@ -78,9 +78,11 @@ acceptance, is:
 \frac{0}{\infty} = 0
 \end{equation}
 
-This finding has severe consequences for our expected run time, which will
-greatly increase with $d$. For example, with $d=10,000$, our
-program would run for a very long time. 
+This finding has severe consequences for our expected run time. As $d$
+increases, the probability of accepting a random vector becomes increasingly
+low, meaning that we must conduct many draws to generate a single random vector,
+meaning that our runtime greatly increases. For example, with $d=10,000$, the
+program might require weeks to generate a modest number of vectors.
 
 \subsection*{B}
 See submitted code \texttt{hw1\_1B.py}.
