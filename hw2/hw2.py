@@ -1,9 +1,5 @@
 import numpy as np
-import sklearn as skl
-
-def GenerateX():
-	x = np.random.uniform()
-	return(x)
+from sklearn import linear_model
 
 def GenerateYGivenX(x):
 
@@ -23,6 +19,8 @@ def GenerateYGivenX(x):
 	
 	return(y)
 
+v_GenerateYGivenX = np.vectorize(GenerateYGivenX)
+
 def GenerateFeatureMatrix(n, d):
 
 	#fill vector of ones
@@ -31,14 +29,30 @@ def GenerateFeatureMatrix(n, d):
 	#create vector of uniform(0,1) random variables
 	X = np.random.rand(n)
 
-	#column bind these two vectors
+	#column bind these two vectors into a matrix
 	mat = np.column_stack((ones, X))
 
 	#create vectorized version of pow function
 	vexp = np.vectorize(pow)
 
-	print(X)
-	for i in range(2, d):
-		print(vexp(X,d))
+	#raise vector X to the 2, 3...d power
+	#column bind this new vector with our matrix
+	for i in range(2, d+1):
+		vec = vexp(X,i)
+		mat = np.column_stack((mat, vec))
+	
+	#return the matrix
+	return(mat)
 
-GenerateFeatureMatrix(4,4)
+fm = GenerateFeatureMatrix(5, 3)
+y = v_GenerateYGivenX(fm[:,1])
+
+lr = linear_model.LogisticRegression(C=1e5)
+
+lr.fit(X=fm, y=y)
+
+print(lr.predict_proba(fm))
+
+
+	
+
