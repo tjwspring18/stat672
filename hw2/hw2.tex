@@ -1,12 +1,15 @@
-\documentclass{article}
+\documentclass{report}
 
 \usepackage{geometry}
 \geometry{margin=1in}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
+
+\usepackage{graphicx}
+\graphicspath{}
+
 \DeclareMathOperator*{\argmax}{arg\,max}
-%\DeclareMathOperator*{\min}{min}
 
 \title{STAT 672: Homework 2}
 
@@ -50,10 +53,14 @@ $$
 P(\mathrm{sign}(Y) \neq \mathrm{sign}(f(x)))
 $$
 Using the law of total probability, this is equal to:
-$$
-P(Y=0|X \in \{(0, 0.2) \cup (0.8, 1)\})P(X \in \{(0, 0.2) \cup (0.8, 1)\}) +
-P(Y=1|X \in [0.2, 0.8])P(X \in [0.2, 0.8])
-$$
+\begin{equation}
+	\begin{split}
+	& P(Y=0|X \in \{(0, 0.2) \cup (0.8, 1)\})P(X \in \{(0, 0.2) \cup (0.8,
+	1)\}) \\
+	& + P(Y=1|X \in [0.2, 0.8])P(X \in [0.2, 0.8]) 
+	\end{split}
+\end{equation}
+
 $$
 (0.2 \times 0.1) + (0.2 \times 0.1) + (0.2 \times 0.6) = 0.16
 $$
@@ -139,5 +146,29 @@ and so can conclude that excess risk is zero if and only if $d \geq 2$:
 	\item $\min_{f \in \mathcal{F}_{d<2}} R(f) - R(f^*) > 0$ \qquad (only
 		if)
 \end{itemize}
+
+\newpage
+
+\subsection*{C}
+
+See \texttt{hw2.py}. I empirically tested the accuracy of my $X$ and $Y|X$
+generating functions by generating 10,000 observations with them and plotting the results,
+as seen in Figure 1. Although this is just a crude 10-bin histogram 
+and so does not perfectly match the theoretical distribution, it appears broadly
+correct; for example, it has a ``barbell'' shape.
+
+\begin{figure}[h]
+	\caption{Problem 1-C Generating Functions}
+	\centering
+	\includegraphics[scale=0.5]{hist}
+\end{figure}
+
+\subsection*{D}
+
+See \texttt{hw2.py}. TALK ABOUT FUNCTIONS.
+
+\subsection*{E}
+
+Advanced simulation
 
 \end{document}
