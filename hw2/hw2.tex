@@ -36,8 +36,8 @@ Our resultant Bayes classifier is:
 $$
 f^*(x) = 
 \begin{cases}
-0 & x \in [0.2, 0.8] \\
-1 & x \in \{(0, 0.2) \cup (0.8, 1)\} 
+	0 & x \in [0.2, 0.8] \\
+	1 & x \in \{(0, 0.2) \cup (0.8, 1)\} 
 \end{cases}
 $$
 Suppose that we use a typical 0-1 loss function.  
@@ -55,9 +55,9 @@ $$
 Using the law of total probability, this is equal to:
 \begin{equation}
 	\begin{split}
-	& P(Y=0|X \in \{(0, 0.2) \cup (0.8, 1)\})P(X \in \{(0, 0.2) \cup (0.8,
-	1)\}) \\
-	& + P(Y=1|X \in [0.2, 0.8])P(X \in [0.2, 0.8]) 
+		& P(Y=0|X \in \{(0, 0.2) \cup (0.8, 1)\})P(X \in \{(0, 0.2) \cup (0.8,
+		1)\}) \\
+		& + P(Y=1|X \in [0.2, 0.8])P(X \in [0.2, 0.8]) 
 	\end{split}
 \end{equation}
 
@@ -158,17 +158,58 @@ and so does not perfectly match the theoretical distribution, it appears broadly
 correct; for example, it has a ``barbell'' shape.
 
 \begin{figure}[h]
-	\caption{Problem 1-C Generating Functions}
+	\caption{$X$ and $Y|X$}
 	\centering
 	\includegraphics[scale=0.5]{hist}
 \end{figure}
 
 \subsection*{D}
 
-See \texttt{hw2.py}. TALK ABOUT FUNCTIONS.
+See \texttt{hw2.py}. I trained three separate logistic regression models for $d=1$, $d=2$, 
+and $d=5$ on randomly generated $X$ and $Y$ ($n=100$), which were generated using the specified
+PDFs (random uniform for $X$ and the given conditional density for $Y|X$). 
+Table 1 shows each model's predictions for a fixed set of $X$.
+\begin{table}[h]
+	\centering
+	\caption{Model predictions of $Y|X$}
+	\begin{tabular}{|r r r r|}
+		\hline
+		\textbf{X} & \textbf{d=1} & \textbf{d=2} & \textbf{d=5} \\
+		0    & 1 & 1 & 1 \\
+		0.25 & 0 & 1 & 0 \\
+		0.50 & 0 & 0 & 0 \\
+		0.75 & 0 & 0 & 0 \\
+		1    & 0 & 1 & 1 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\newpage
 
 \subsection*{E}
+See \texttt{hw2.py}. My results are shown in Figure 2. 
 
-Advanced simulation
+As $n$ grows larger, empirical error increases and generalization error decreases. 
+This phenomenon has an intuitive explanation. 
 
+When $n$ is small, the model has only a limited amount of information to learn
+on. Its classification rules overfit to the few random observations in $D$ rather than
+learning the true general relationship between $X$ and $Y$. Because $n$ is small, basic
+probability means that $D^\prime$ likely will contain behavior not present in
+$D$. The model has no idea how to predict these. The
+model hence will do a good job of predicting $D$ (low empirical error) but a
+poor job of predicting $D^\prime$
+(high generalization error). 
+
+When $n$ is large, $D$ contains enough information for the model to learn the
+true relationship between $X$ and $Y$. It no longer will overfit to $D$-idiosyncratic
+behavior and so will attain higher empirical error than was present with small
+$N$. But, since the model has learned the true relationship between $X$ and $Y$,
+it also will do a better job of predicting $D^\prime$ (lower generalization error).
+
+\begin{figure}[h]
+	\caption{Advanced Simulation}
+	\centering
+	\includegraphics[scale=1]{plot}
+\end{figure}
 \end{document}

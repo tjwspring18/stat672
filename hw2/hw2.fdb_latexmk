@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1519439428 "hw2.tex" "hw2.pdf" "hw2" 1519439428
+["pdflatex"] 1519501961 "hw2.tex" "hw2.pdf" "hw2" 1519501961
   "/usr/local/texlive/2017/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1480098698 1004 54797486969f23fa377b128694d548df ""
   "/usr/local/texlive/2017/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1480098698 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
   "/usr/local/texlive/2017/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm" 1480098698 916 f87d7c45f9c908e672703b83b72241a3 ""
@@ -77,9 +77,10 @@
   "/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1514131519 79663 fe86148abfbb516615a10a5c4755b6bf ""
   "/usr/local/texlive/2017/texmf-var/web2c/pdftex/pdflatex.fmt" 1514125355 2589344 e3e8f289402fb761e5a9dc94a585dc77 ""
   "/usr/local/texlive/2017/texmf.cnf" 1514125340 455 5b996dcaa0eb4ef14a83b026bc0a008c ""
-  "hist.png" 1519439264 16986 92e404e955b01ac9e149acf4314839a5 ""
-  "hw2.aux" 1519439428 117 578971a1e7970afa36d5ab175f10f69e ""
-  "hw2.tex" 1519439426 5034 270c7da135302bc65e16d474c48621e1 ""
+  "hist.png" 1519495906 17026 11c7ad4a6084361948a8fcae28582c6a ""
+  "hw2.aux" 1519501961 296 0ca5a5e37e572766f3a441afbe9b6d19 ""
+  "hw2.tex" 1519501959 6873 c76db1b5d707bc8590ff4809a65bc105 ""
+  "plot.png" 1519500021 52618 45121df7789df3a3d53f9525b855c1bf ""
   (generated)
   "hw2.aux"
   "hw2.log"
