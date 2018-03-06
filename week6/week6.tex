@@ -173,7 +173,7 @@ $$
 
 Making the above big is equivalent to making the L2 norm of $w$ small:
 $$
-\min{w_0, w} \frac{1}{2}||w||_2
+\min_{w_0, w} \frac{1}{2}||w||_2
 $$
 
 ...and we can cleverly combine the two previous constraints
@@ -181,10 +181,113 @@ $$
 s.t. \quad Y_i(w_0 + \langle w, x \rangle)\geq 1
 $$
 
+\includegraphics[scale=0.25]{svm1}
+
 This is the \textit{hard margin} SVM problem in its usual form.
 It is a nice convex optimization problem that we can solve in the usual way.
 
-\includegraphics[scale=0.25]{svm1}
+The Lagrangian is:
+$$
+L(w_0, w, \alpha) = \frac{1}{2}||w||^2 + \sum_{i=1}^n \alpha_i [1 - Y_i(\langle
+w, x_i \rangle + w_0)]
+$$
+
+We compute the stationary points:
+
+$$
+\frac{\partial L}{\partial w} = \frac{\partial}{\partial w}
+\left( \frac{1}{2}||w||^2 \right) + \frac{\partial}{\partial w}
+\left(\sum_{i=1}^n \alpha_i \right) - \frac{\partial}{\partial w}\left( \sum_{i=1}^n \alpha_i Y_i \langle
+w, x_i \rangle \right) - \frac{\partial}{\partial w} \left( \sum_{i=1}^n
+\alpha_i Y_i w_0 \right)
+$$
+$$
+w = \sum_{i=1}^n \alpha_i Y_i x_i
+$$
+$$
+\frac{\partial L}{\partial w_0} = \frac{\partial}{\partial w_0}
+\left( \frac{1}{2}||w||^2 \right) + \frac{\partial}{\partial w_0}
+\left(\sum_{i=1}^n \alpha_i \right) - \frac{\partial}{\partial w_0}\left( \sum_{i=1}^n \alpha_i Y_i \langle
+w, x_i \rangle \right) - \frac{\partial}{\partial w_0} \left( \sum_{i=1}^n
+\alpha_i Y_i w_0 \right)
+$$
+$$
+\sum_{i=1}^n \alpha_i Y_i = 0
+$$
+We plug them into the Lagrangian to obtain the dual. Let's proceed in steps. By
+definition, $||v||^2 = \langle v, v \rangle$. So:
+
+$$
+\frac{1}{2} ||w||^2 = \frac{1}{2} \langle w, w \rangle = 
+\frac{1}{2} \langle \sum_{i=1}^n \alpha_i Y_i x_i, \sum_{j=1}^n \alpha_j Y_j x_j \rangle
+$$
+
+The $\alpha$ and $Y$ are just scalars and so we can pull them out:
+
+$$
+= \frac{1}{2} \sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j Y_i Y_j \langle x_i, x_j \rangle
+$$
+
+Now we factor out the right hand side:
+$$
+\sum_{i=1}^n \alpha_i [1 - Y_i(\langle w, x_i \rangle + w_0)] = \sum_{i=1}^n
+\alpha_i [1 - Y_i \langle w, x_i \rangle - Y_i w_0]
+$$
+$$
+= \sum_{i=0}^n \alpha_i - \sum_{i=0}^n \alpha_i Y_i \langle w, x_i \rangle -
+w_0 \sum_{i=0}^n \alpha_i Y_i
+$$
+
+We know that:
+$$
+w_0 \sum_{i=0}^n \alpha_i Y_i = w_0 \times 0 = 0
+$$
+
+Now let's plug $w$ into the middle term:
+
+$$
+\sum_{i=0}^n \alpha_i Y_i \langle \sum_{j=0}^n \alpha_j Y_j x_j, x_i \rangle
+$$
+
+Again we can pull out the scalars:
+
+$$
+= \sum_{i=0}^n \sum_{j=0}^n \alpha_i \alpha_j Y_i Y_j \langle x_i, x_j \rangle
+$$
+
+We recombine everything to form the dual:
+$$
+q(\alpha) = \frac{1}{2} \sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j Y_i Y_j
+\langle x_i, x_j \rangle + \sum_{i=1}^n \alpha_i - 
+\sum_{i=0}^n \sum_{j=0}^n \alpha_i \alpha_j Y_i Y_j \langle x_i, x_j \rangle
+$$
+
+$$
+= \sum_{i=1}^n \alpha_i - \frac{1}{2} \sum_{i=0}^n \sum_{j=0}^n \alpha_i \alpha_j Y_i Y_j \langle x_i, x_j \rangle
+$$
+
+Hence, the dual problem is:
+$$
+\max_{\alpha \in \mathbb{R}^n} 
+\sum_{i=1}^n \alpha_i - \frac{1}{2} \sum_{i=0}^n \sum_{j=0}^n \alpha_i \alpha_j Y_i Y_j \langle x_i, x_j \rangle
+$$
+
+subject to:
+
+$$
+\alpha_i \geq 0 \quad \forall i
+$$
+$$
+\sum_{i=0}^n Y_i \alpha_i = 0
+$$
+
+The last constraint is for feasibility: if we didn't have it, $q$ could tend to
+$- \infty$ by letting $w_0$ tend to $\pm \infty$. Since this is a feasible
+problem, Slater's condition is met. The dual gap is 0. Solving the dual is
+equivalent to solving the primal. 
+
+KKT and slackness and support vectors?
+
 
 \medskip
 
@@ -196,9 +299,6 @@ alternative soft margin approach.
 
 We introduce slack variables, as well as a cost parameter to control them. The
 problem becomes:
-$$
-
-$$
 
 \end{document}
 
