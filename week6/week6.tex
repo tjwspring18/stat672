@@ -201,7 +201,6 @@ $$
 \quad Y_i(\langle w, x_i \rangle + b) \geq 1 \quad \forall i
 $$
 
-%\includegraphics[scale=0.25]{svm1}
 
 This is a quadratic function with linear constraints, aka quadratic programming.
 The Lagrangian is:
@@ -337,54 +336,93 @@ property helps us control $n$.
 To determine $b$, we average $Y_i - \langle w, x_i \rangle$ over all $i$ with
 $\alpha_i > 0$.
 
+\includegraphics[scale=0.25]{svm1}
+
 \medskip
 
 \textit{Soft margin}
 
 The above approach may not always be possible (since it requires linear
 seperability) or desirable (since it may lead to overfitting). So, we have the
-alternative soft margin approach.
+alternative soft margin approach. We introduce slack variables, as well as a 
+cost parameter to control them. The problem becomes:
 
-We introduce slack variables, as well as a cost parameter to control them. The
-problem becomes:
+$$
+\min_{w \in \mathbb{R^d}, b \in \mathbb{R}, \xi \in \mathbb{R}^n} 
+\frac{1}{2} ||w||^2 + C \frac{1}{n} \sum_{i=1}^n \xi_i
+$$
+$$
+s.t. \quad Y_i(\langle w, x_i \rangle + b) \geq 1 - \xi_i \quad \forall i
+$$
+$$
+\quad \xi_i \geq 0 \quad \forall i
+$$
 
+We also can view this problem through the lens of ERM. Let's say we obtain an
+optimal solution $w^*, b^*, \xi^*$. Then, it makes sense that:
+$$
+\xi_i^* = \max(0, 1 - Y_i(\langle w, x_i \rangle + b)) 
+$$
+
+We now can recharacterize the problem as:
+$$
+\min_{w, b} C \frac{1}{n} \sum_{i=1}^n \max(0, 1 - Y_i(\langle w, x_i \rangle +
+b)) + \frac{1}{2}||w||^2
+$$
+
+This is equivalent to:
+$$
+\min_{f \in \mathcal{F}} \frac{1}{n} \sum_{i=1}^n L(Y_i f(X_i)) + \lambda
+||w||^2
+$$
+
+Where $\mathcal{F}$ is the linear hypothesis class, $L$ is the hinge loss, and
+$\lambda=\frac{1}{2C}$
+
+\medskip
+
+Anyways, the Lagrangian thus is:
+$$
+L(w, b, \xi, \alpha, \beta) = 
+\frac{1}{2} ||w||^2 + 
+C \frac{1}{n} \sum_{i=1}^n \xi_i +
+\sum_{i=1}^n \alpha_i(1 - \xi_i - Y_i (\langle w, x_i \rangle + b)) -
+\sum_{i=1}^n \beta_i \xi_i
+$$
+
+Taking the gradient or partial derivative w/r/t $w, b, \xi$ yields:
+$$
+w = \sum_{i=1}^n \alpha_i Y_i x_i
+$$
+$$
+\sum_{i=1}^n \alpha_i Y_i = 0
+$$
+$$
+\sum_{i=1}\beta_i = \frac{C}{n} - \sum_{i=1}^n \alpha_i \to \beta_i = \frac{C}{n} - \alpha_i
+$$
+
+Since $\beta_i \geq 0$, we can deduce an upper limit for $\alpha_i$
+$$
+0 \leq \alpha_i \leq \frac{C}{n} \quad \forall i
+$$
+
+This results in:
+
+$$
+\max_{\alpha \in \mathbb{R}^n} 
+\sum_{i=1}^n \alpha_i - \frac{1}{2} \sum_{i=0}^n \sum_{j=0}^n \alpha_i \alpha_j Y_i Y_j \langle x_i, x_j \rangle
+$$
+$$
+s.t. \quad 0 \leq \alpha_i \leq \frac{C}{n} \quad \forall i
+$$
+$$
+\quad \sum_{i=0}^n Y_i \alpha_i = 0
+$$
+
+All our previous observations about support vectors still hold.
+
+\includegraphics[scale=0.25]{soft.png}
 \end{document}
 
-
-
-Reminder: 3 methods
-LDA
-Logistics
-SVM
-
-Logistic regression
-Bayes classifier is also linear classifier
-MLE is equivalent to ERM with respect to linear hypothesis class and logistic
-loss
-Since logistic loss is convex function of margin y f(x)
-Can add a regularizer, typically L1 or L2 - useful to prevent overfitting
-If you have more d than n, can always achieve perfectly separate
-
-LDA works poorly bc of squared loss in a classification problem - for squared
-loss, points with large margin are penalized
-
-SVM achieves data compression - solution depends ona  small subset of D, the
-so-called support vectors
-
-Have to look at both prime and dual
-Write down Lagrangian - slide 37
-Study SVM this weekend
-Hard margin only if linearly separable (and even then might not want to bc of
-danger of overfitting)
-
-Soft margin - allow some observations to be incorrectly classified and/or inside
-envelope
-Bigger the C, the more tolerant you are to violations of envelope
-Can show that that formulation equivalent to ERM
-
-Dual allows non-linear decision boundary
-
-When n is large, use primal
-When d is large, use dual
 
 
