@@ -106,6 +106,16 @@ always less than or equal to the original objective function evaluated at its
 optimal value. Putting these together, if we maximize $\lambda$ and $v$ in the dual, it is the same
 as minimizing $x$ in the primal.
 
+\smallskip
+
+Slater's condition: if the primal and dual are feasible, then the gap is zero.
+
+\smallskip
+
+Complementary slackness: if a variable is positive, then the associated dual
+constraint must be binding. If a constraint fails to bind, then the associated
+variable must be zero.
+
 \medskip
 
 \textbf{Logistic}
@@ -119,102 +129,114 @@ because it doesn't have squared error (bad). Example:
 
 \textbf{SVM}
 
-Key advantages: no distribution assumptions and data compression (classification
-only depends on a relatively small subset of overall data).
-
 \smallskip
 
-\textit{Hard margin}
+\textit{Hard margin (linearly separable data)}
 
-Data must be linearly separable.
+Suppose we have labels $Y_i \in \{-1,1\}$ and data $X_i$. 
 
-We want to construct a decision hyperplane $H_{w_0 + \langle w, x \rangle}$. 
+We want to construct a decision hyperplane $\langle w, X \rangle + b= 0$. $w$ is
+a weight vector that we apply to $X$. If for a particular observation $\langle w, X_i \rangle + b < 0$, we
+classify as $Y_i=-1$. Similarly, if $\langle w, X_i \rangle + b > 0$, we
+classify it as $Y_i = 1$
 
-Notation:
-$w_0 + \langle w, x \rangle = \mathbf{w}^T\mathbf{X} + b = \sum w_ix_i + b$. For
-example, fo line $3x+2$, $w=3$ and $w_0 = 2$.
+Notation note:
+$$b + \langle w, x \rangle = \mathbf{w}^T\mathbf{X} + b = \sum w_ix_i + b$$ 
 
-We will require $w$ to be \textit{canonical} to $x$, i.e.
+What makes a good hyperplane? Assuming linear separability, a criterion is that
+it maximizes the minimum distance from the data points to the hyperplane. The
+distance of a point $x_i$ to a hyperplane $w'x + b$ is:
 
 $$
-\min_{1 \leq i \leq n} |w_0 + \langle w, x_i \rangle| = 1
-$$
-
-The L2 distance of $x$ to the hyperplane is:
-$$
-\min_{z \in H}||z-x||_2
-$$
-
-Which can be shown to be equivalent to:
-$$
-\frac{w_0 + \langle w, x \rangle}{||w||_2}
+\frac{|w'x_i + b|}{||w||}
 $$
 
-So, the closest point has distance to H of:
+So, we might construct a good hyperplane by trying to maximize the distance to
+the closest point:
+
 $$
-\frac{1}{||w||_2}
+\max_{w, b} \min\{\frac{|w'x_i + b|}{||w||}\}
 $$
 
-We want to maximize the size of the margin, which means maximizing the minimum
-distance from $x$ to $H$, which means maximizing the above expression...
+We also want to make sure that it classifies correctly, so we add the
+below constraint. 
+
 $$
-\max_{w_0, w}  \frac{1}{||w||_2} \quad 
+s.t. \quad Y_i(\langle w, x_i \rangle + b) \geq 1 \quad \forall i
 $$
 
-...while keeping it canonical
+A problem, however, is that this won't have a unique solution because we can
+scale the problem by some constant $\gamma$ and obtain identical results. We get
+around this by stipulating that the hyperplane must be \textit{canonical}
+to $X$, which means that the distance between the hyperplane and the closest
+point is unity.
+
 $$
-s.t. \quad w_0 + \langle w, x \rangle = 1 
+\min_{1 \leq i \leq n} |\langle w, x_i \rangle + b| = 1
 $$
 
-...and correctly separating the classes
+Since we now know that the distance between the hyperplane and the point closest
+to the hyperplane is unity, the problem becomes: 
+
 $$
-\mathrm{sign}(w_0 + \langle w, x \rangle) = Y_i
+\max_{w, b}\frac{1}{||w||}
+$$
+$$
+s.t. \min_{1 \leq i \leq n} |\langle w, x_i \rangle + b| = 1
+$$
+$$
+\quad Y_i(\langle w, x_i \rangle + b) \geq 1 \quad \forall i
 $$
 
-Making the above big is equivalent to making the L2 norm of $w$ small:
+Maximizing the above function is equivalent to minimizing $||w||$. We will add
+some other stuff to the problem to make later work easier.
+
 $$
-\min_{w_0, w} \frac{1}{2}||w||_2
+\min_{w, b}\frac{1}{2}||w||^2
+$$
+$$
+s.t. \min_{1 \leq i \leq n} |\langle w, x_i \rangle + b| = 1
+$$
+$$
+\quad Y_i(\langle w, x_i \rangle + b) \geq 1 \quad \forall i
 $$
 
-...and we can cleverly combine the two previous constraints
-$$
-s.t. \quad Y_i(w_0 + \langle w, x \rangle)\geq 1
-$$
+%\includegraphics[scale=0.25]{svm1}
 
-\includegraphics[scale=0.25]{svm1}
-
-This is the \textit{hard margin} SVM problem in its usual form.
-It is a nice convex optimization problem that we can solve in the usual way.
-
+This is a quadratic function with linear constraints, aka quadratic programming.
 The Lagrangian is:
 $$
-L(w_0, w, \alpha) = \frac{1}{2}||w||^2 + \sum_{i=1}^n \alpha_i [1 - Y_i(\langle
-w, x_i \rangle + w_0)]
+L(b, w, \alpha) = \frac{1}{2}||w||^2 + \sum_{i=1}^n \alpha_i [1 - Y_i(\langle
+w, x_i \rangle + b)]
 $$
 
-We compute the stationary points:
+We need the minima to compute the dual. We find them by taking the derivative
+and setting equal to 0:
 
 $$
-\frac{\partial L}{\partial w} = \frac{\partial}{\partial w}
-\left( \frac{1}{2}||w||^2 \right) + \frac{\partial}{\partial w}
-\left(\sum_{i=1}^n \alpha_i \right) - \frac{\partial}{\partial w}\left( \sum_{i=1}^n \alpha_i Y_i \langle
-w, x_i \rangle \right) - \frac{\partial}{\partial w} \left( \sum_{i=1}^n
-\alpha_i Y_i w_0 \right)
+\nabla_w = 
+\nabla_w \left( \frac{1}{2}||w||^2 \right) + 
+\nabla_w \left(\sum_{i=1}^n \alpha_i \right) - 
+\nabla_w \left( \sum_{i=1}^n \alpha_i Y_i \langle w, x_i \rangle \right) - 
+\nabla_w \left( \sum_{i=1}^n \alpha_i Y_i b \right)
+= 0
 $$
 $$
 w = \sum_{i=1}^n \alpha_i Y_i x_i
 $$
 $$
-\frac{\partial L}{\partial w_0} = \frac{\partial}{\partial w_0}
-\left( \frac{1}{2}||w||^2 \right) + \frac{\partial}{\partial w_0}
-\left(\sum_{i=1}^n \alpha_i \right) - \frac{\partial}{\partial w_0}\left( \sum_{i=1}^n \alpha_i Y_i \langle
-w, x_i \rangle \right) - \frac{\partial}{\partial w_0} \left( \sum_{i=1}^n
-\alpha_i Y_i w_0 \right)
+\frac{\partial L}{\partial b} = \frac{\partial}{\partial b}
+\left( \frac{1}{2}||w||^2 \right) + \frac{\partial}{\partial b}
+\left(\sum_{i=1}^n \alpha_i \right) - \frac{\partial}{\partial b}\left( \sum_{i=1}^n \alpha_i Y_i \langle
+w, x_i \rangle \right) - \frac{\partial}{\partial b} \left( b \sum_{i=1}^n
+\alpha_i Y_i \right)
+=0
 $$
 $$
 \sum_{i=1}^n \alpha_i Y_i = 0
 $$
-We plug them into the Lagrangian to obtain the dual. Let's proceed in steps. By
+
+We plug them into the Lagrangian to obtain the dual. By
 definition, $||v||^2 = \langle v, v \rangle$. So:
 
 $$
@@ -229,18 +251,20 @@ $$
 $$
 
 Now we factor out the right hand side:
+
 $$
-\sum_{i=1}^n \alpha_i [1 - Y_i(\langle w, x_i \rangle + w_0)] = \sum_{i=1}^n
-\alpha_i [1 - Y_i \langle w, x_i \rangle - Y_i w_0]
+\sum_{i=1}^n \alpha_i [1 - Y_i(\langle w, x_i \rangle + b)] = \sum_{i=1}^n
+\alpha_i [1 - Y_i \langle w, x_i \rangle - Y_i b]
 $$
 $$
 = \sum_{i=0}^n \alpha_i - \sum_{i=0}^n \alpha_i Y_i \langle w, x_i \rangle -
-w_0 \sum_{i=0}^n \alpha_i Y_i
+b \sum_{i=0}^n \alpha_i Y_i
 $$
 
 We know that:
+
 $$
-w_0 \sum_{i=0}^n \alpha_i Y_i = w_0 \times 0 = 0
+b \sum_{i=0}^n \alpha_i Y_i = b \times 0 = 0
 $$
 
 Now let's plug $w$ into the middle term:
@@ -256,6 +280,7 @@ $$
 $$
 
 We recombine everything to form the dual:
+
 $$
 q(\alpha) = \frac{1}{2} \sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j Y_i Y_j
 \langle x_i, x_j \rangle + \sum_{i=1}^n \alpha_i - 
@@ -267,34 +292,57 @@ $$
 $$
 
 Hence, the dual problem is:
+
 $$
 \max_{\alpha \in \mathbb{R}^n} 
 \sum_{i=1}^n \alpha_i - \frac{1}{2} \sum_{i=0}^n \sum_{j=0}^n \alpha_i \alpha_j Y_i Y_j \langle x_i, x_j \rangle
 $$
-
-subject to:
-
 $$
-\alpha_i \geq 0 \quad \forall i
+s.t. \quad \alpha_i \geq 0 \quad \forall i
 $$
 $$
-\sum_{i=0}^n Y_i \alpha_i = 0
+\quad \sum_{i=0}^n Y_i \alpha_i = 0
 $$
 
-The last constraint is for feasibility: if we didn't have it, $q$ could tend to
-$- \infty$ by letting $w_0$ tend to $\pm \infty$. Since this is a feasible
-problem, Slater's condition is met. The dual gap is 0. Solving the dual is
+The first constraint corresponds to our ``correctness'' constraint in the
+objective. The second constraint is a ``balance'' constraint: that the distances
+from points to the hyperplane must balance each other out.
+
+Both the primal and dual are feasible, so the dual gap is 0 and solving the dual is
 equivalent to solving the primal. 
 
-KKT and slackness and support vectors?
+Looking at this dual gives us some interesting properties. Complementary slackness 
+says that if a variable is positive,
+then the associated dual constraint must be binding; conversely, if a constraint
+fails to bind, then the associated dual variable must be zero. In the primal, we
+had the constraint $Y_i(b + \langle w, x_i \rangle)\geq 1$, which is the same as
+$1 - Y_i(b + \langle w, x_i \rangle) \leq 0$. If for primal constraint $1 - Y_i(b + \langle w, x_i
+\rangle) = 0$, i.e. $x_i$ lays exactly on the margin, then the dual variable
+$\alpha_i > 0$. In other words, only points laying on the
+margin---\textit{support vectors}---determine the
+separating hyperplane. 
 
+This definitely helps our robustness: 
+variation of training points won't change our decision hyperplane unless the
+points happen to fall on the margin. 
+
+It also can help our computation if we have
+some heuristics to determine before computing $w$ what are some likely support
+vectors.
+
+In essence, specifying a hyperplane---a function of a simple form $w'x$---helps
+us control $d$ and avoid the curse of dimensionality. The support vector
+property helps us control $n$.
+
+To determine $b$, we average $Y_i - \langle w, x_i \rangle$ over all $i$ with
+$\alpha_i > 0$.
 
 \medskip
 
 \textit{Soft margin}
 
 The above approach may not always be possible (since it requires linear
-seperability) or feasible (since it may lead to overfitting). So, we have the
+seperability) or desirable (since it may lead to overfitting). So, we have the
 alternative soft margin approach.
 
 We introduce slack variables, as well as a cost parameter to control them. The
